@@ -8,17 +8,21 @@ import com.flightapp.auth_service.dto.RegisterRequest;
 import com.flightapp.auth_service.entity.User;
 import com.flightapp.auth_service.repository.UserRepository;
 import com.flightapp.auth_service.service.AuthService;
+import com.flightapp.auth_service.util.JwtUtil;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public AuthServiceImpl(UserRepository userRepository,
-                           BCryptPasswordEncoder passwordEncoder) {
+                           BCryptPasswordEncoder passwordEncoder,
+                           JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
 
         return "User registered successfully";
     }
-    
+
     @Override
     public String login(LoginRequest request) {
 
@@ -48,6 +52,6 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        return "Login successful";
+        return jwtUtil.generateToken(user.getEmail(), user.getRole());
     }
 }
