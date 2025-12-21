@@ -3,6 +3,7 @@ package com.flightapp.auth_service.service.impl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.flightapp.auth_service.dto.LoginRequest;
 import com.flightapp.auth_service.dto.RegisterRequest;
 import com.flightapp.auth_service.entity.User;
 import com.flightapp.auth_service.repository.UserRepository;
@@ -35,5 +36,18 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return "User registered successfully";
+    }
+    
+    @Override
+    public String login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        return "Login successful";
     }
 }
