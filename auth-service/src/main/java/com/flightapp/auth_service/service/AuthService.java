@@ -1,5 +1,7 @@
 package com.flightapp.auth_service.service;
 
-public class AuthService {
+import com.flightapp.auth_service.dto.RegisterRequest;
 
+public interface AuthService {
+    String register(RegisterRequest request);
 }
