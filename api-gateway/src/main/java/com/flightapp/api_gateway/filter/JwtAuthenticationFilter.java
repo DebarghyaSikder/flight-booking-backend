@@ -8,6 +8,7 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -30,7 +31,7 @@ public class JwtAuthenticationFilter
 
             String path = exchange.getRequest().getURI().getPath();
 
-            // Allow public endpoints
+            // Public endpoints
             if (path.startsWith("/auth")) {
                 return chain.filter(exchange);
             }
@@ -41,8 +42,9 @@ public class JwtAuthenticationFilter
                 return exchange.getResponse().setComplete();
             }
 
-            String authHeader =
-                    exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            String authHeader = exchange.getRequest()
+                    .getHeaders()
+                    .getFirst(HttpHeaders.AUTHORIZATION);
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -58,18 +60,23 @@ public class JwtAuthenticationFilter
                         .parseClaimsJws(token)
                         .getBody();
 
-                // Optional: pass user info downstream
-                exchange.getRequest().mutate()
-                        .header("X-User-Email", claims.getSubject())
-                        .header("X-User-Role", claims.get("role", String.class))
+                // 🔑 THIS IS THE IMPORTANT PART
+                ServerWebExchange mutatedExchange = exchange.mutate()
+                        .request(
+                                exchange.getRequest().mutate()
+                                        .header("X-User-Email", claims.getSubject())
+                                        .header("X-User-Role",
+                                                claims.get("role", String.class))
+                                        .build()
+                        )
                         .build();
+
+                return chain.filter(mutatedExchange);
 
             } catch (Exception e) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
-
-            return chain.filter(exchange);
         };
     }
 

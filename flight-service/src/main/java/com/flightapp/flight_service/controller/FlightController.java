@@ -37,7 +37,8 @@ public class FlightController {
         return flightService.getFlightById(id);
     }
     
-    @PutMapping("/updateSeats")
+    @PutMapping("/flight/updateSeats")
+
     public boolean updateSeats(
             @RequestParam Long flightId,
             @RequestParam int seats) {
