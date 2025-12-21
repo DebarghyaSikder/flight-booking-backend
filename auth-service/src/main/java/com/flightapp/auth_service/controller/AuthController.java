@@ -3,6 +3,7 @@ package com.flightapp.auth_service.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.flightapp.auth_service.dto.LoginRequest;
 import com.flightapp.auth_service.dto.RegisterRequest;
 import com.flightapp.auth_service.service.AuthService;
 
@@ -19,5 +20,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 }
