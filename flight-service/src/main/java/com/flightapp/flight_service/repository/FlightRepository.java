@@ -1,5 +1,12 @@
 package com.flightapp.flight_service.repository;
 
-public class FlightRepository {
+import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.flightapp.flight_service.entity.Flight;
+
+public interface FlightRepository extends JpaRepository<Flight, Long> {
+
+    List<Flight> findBySourceAndDestination(String source, String destination);
 }
