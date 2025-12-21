@@ -35,6 +35,12 @@ public class JwtAuthenticationFilter
             if (path.startsWith("/auth")) {
                 return chain.filter(exchange);
             }
+            
+         // Allow internal service-to-service calls
+            if (exchange.getRequest().getHeaders().containsKey("X-Internal-Call")) {
+                return chain.filter(exchange);
+            }
+
 
             // Check Authorization header
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {

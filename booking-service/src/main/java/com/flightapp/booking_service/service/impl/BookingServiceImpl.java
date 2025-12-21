@@ -25,9 +25,11 @@ public class BookingServiceImpl implements BookingService {
         Booking savedBooking = bookingRepository.save(booking);
 
         boolean seatsUpdated = flightClient.updateSeats(
+                "true",
                 booking.getFlightId(),
                 booking.getSeatsBooked()
         );
+
 
         if (seatsUpdated) {
             savedBooking.setStatus("CONFIRMED");
