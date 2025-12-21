@@ -36,4 +36,22 @@ public class FlightController {
     public Flight getFlight(@PathVariable Long id) {
         return flightService.getFlightById(id);
     }
+    
+    @PutMapping("/updateSeats")
+    public boolean updateSeats(
+            @RequestParam Long flightId,
+            @RequestParam int seats) {
+
+        Flight flight = flightService.getFlightById(flightId);
+
+        if (flight == null || flight.getAvailableSeats() < seats) {
+            return false;
+        }
+
+        flight.setAvailableSeats(flight.getAvailableSeats() - seats);
+        flightService.addFlight(flight);
+
+        return true;
+    }
+
 }
