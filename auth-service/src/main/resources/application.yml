@@ -1,5 +1,5 @@
 server:
-  port: 0   # dynamic port (best practice for services)
+  port: 0
 
 spring:
   application:
