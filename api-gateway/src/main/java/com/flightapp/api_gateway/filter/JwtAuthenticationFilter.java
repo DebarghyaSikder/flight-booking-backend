@@ -31,10 +31,14 @@ public class JwtAuthenticationFilter
 
             String path = exchange.getRequest().getURI().getPath();
 
-            // Public endpoints
-            if (path.startsWith("/auth")) {
+         // Public endpoints
+            if (
+                path.startsWith("/auth") ||
+                (path.startsWith("/flight/search") && exchange.getRequest().getMethod().name().equals("GET"))
+            ) {
                 return chain.filter(exchange);
             }
+
             
          // Allow internal service-to-service calls
             if (exchange.getRequest().getHeaders().containsKey("X-Internal-Call")) {
@@ -66,7 +70,6 @@ public class JwtAuthenticationFilter
                         .parseClaimsJws(token)
                         .getBody();
 
-                // 🔑 THIS IS THE IMPORTANT PART
                 ServerWebExchange mutatedExchange = exchange.mutate()
                         .request(
                                 exchange.getRequest().mutate()
