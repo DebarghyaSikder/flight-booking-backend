@@ -1,6 +1,7 @@
 package com.flightapp.booking_service.service.impl;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.flightapp.booking_service.client.FlightClient;
@@ -59,5 +60,10 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return savedBooking;
+    }
+    
+    @Override
+    public List<Booking> getBookingsByUser(String email) {
+        return bookingRepository.findByUserEmail(email);
     }
 }

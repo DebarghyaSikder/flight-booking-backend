@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flightapp.booking_service.entity.Booking;
 import com.flightapp.booking_service.service.BookingService;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+
 @RestController
 @RequestMapping("/booking")
 public class BookingController {
@@ -27,4 +32,13 @@ public class BookingController {
         booking.setUserEmail(email);
         return bookingService.createBooking(booking);
     }
+    @GetMapping("/my")
+    public List<Booking> getMyBookings(
+            @RequestHeader("X-User-Email") String email) {
+
+        return bookingService.getBookingsByUser(email);
+    }
+
+
+
 }
